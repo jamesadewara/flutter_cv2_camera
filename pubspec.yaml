@@ -1,8 +1,10 @@
 name: flutter_cv2_camera
-description: "A new Flutter package project."
+description: "A custom Flutter plugin that bridges the power of OpenCV in C++ with real-time camera access in Flutter. Designed to enable real-time image streaming, frame analysis, and snapshot capturing—perfect for AI/ML projects focused on computer vision."
+authors:
+  - James Adewara <
 version: 0.0.1
 homepage:
-repository: 
+repository: "https://github.com/jamesadewara/flutter_cv2_camera" 
 issue_tracker: 
 documentation:
 
@@ -14,6 +16,8 @@ dependencies:
   flutter:
     sdk: flutter
   ffi: ^2.1.4
+  path_provider: ^2.1.2
+  path: ^1.8.3
 
 dev_dependencies:
   flutter_test:
@@ -35,8 +39,6 @@ flutter:
         ffiPlugin: true
       macos:
         ffiPlugin: true
-  assets:
-    - assets/
 
 # Optional: Points to an example app
 example:
