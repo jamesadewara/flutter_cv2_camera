@@ -21,11 +21,11 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home:  const CameraPage(),
-    
+      home: const CameraPage(),
     );
   }
 }
+
 class CameraPage extends StatefulWidget {
   const CameraPage({super.key});
 

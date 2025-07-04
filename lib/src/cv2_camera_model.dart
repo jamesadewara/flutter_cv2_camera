@@ -8,10 +8,7 @@ class Cv2Frame {
   Cv2Frame(this.bytes, {this.flipCode = 0});
 
   // For serialization to send to a Python backend
-  Map<String, dynamic> toJson() => {
-        'data': bytes,
-        'flip_code': flipCode,
-      };
+  Map<String, dynamic> toJson() => {'data': bytes, 'flip_code': flipCode};
 
   // Convert to base64 string if needed for APIs
   String toBase64() => base64Encode(bytes);
