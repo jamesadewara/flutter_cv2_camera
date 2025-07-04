@@ -2,6 +2,7 @@
 #include <opencv2/opencv.hpp>
 #include <thread>
 #include <mutex>
+#include <cstdint> 
 
 static cv::VideoCapture cap;
 static cv::Mat currentFrame;

@@ -1,45 +1,44 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.28.3)
 project(flutter_cv2_camera_plugin)
 
-# Locate Flutter's generated include path for Linux desktop
-set(FLUTTER_MANAGED_DIR "${CMAKE_CURRENT_SOURCE_DIR}/flutter")
-set(FLUTTER_INCLUDE_DIR "${FLUTTER_MANAGED_DIR}/ephemeral/include")
+# Set C++ standard
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Path to native C++ camera logic (relative to plugin dir)
+# 1. Basic setup
+include_directories(
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native_cv2"
+    "${CMAKE_CURRENT_SOURCE_DIR}/flutter/ephemeral/include"
+)
+
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+
+# 2. Build native_cv2 as STATIC library
 add_subdirectory(../native_cv2 native_cv2_build)
 
-# Define the plugin shared library
+# 3. Build FFI library
 add_library(flutter_cv2_camera_plugin SHARED
-  flutter_cv2_camera_plugin.cc
+    flutter_cv2_camera_plugin.cc
 )
 
-# Include Flutter headers + native OpenCV headers
-target_include_directories(flutter_cv2_camera_plugin PUBLIC
-  "${FLUTTER_INCLUDE_DIR}"
-  ../native_cv2
+target_include_directories(flutter_cv2_camera_plugin PRIVATE
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native_cv2"
 )
 
-# Link against native OpenCV camera lib
-target_link_libraries(flutter_cv2_camera_plugin
-  native_cv2
+# 4. Find and link dependencies
+find_package(Threads REQUIRED)
+find_package(OpenCV REQUIRED)
+
+target_link_libraries(flutter_cv2_camera_plugin PRIVATE
+    native_cv2
+    ${OpenCV_LIBS}
+    Threads::Threads
 )
 
-# Define Flutter plugin macro
-target_compile_definitions(flutter_cv2_camera_plugin
-  PRIVATE FLUTTER_PLUGIN_IMPL
-)
-
-# Copy libnative_cv2.so to the bundle output directory (Flutter runs from here)
-add_custom_command(
-  TARGET flutter_cv2_camera_plugin POST_BUILD
-  COMMAND ${CMAKE_COMMAND} -E copy_if_different
-    $<TARGET_FILE:native_cv2>
-    ${PROJECT_BINARY_DIR}/../bundle/libnative_cv2.so
-)
-
-add_custom_command(
-  TARGET flutter_cv2_camera_plugin POST_BUILD
-  COMMAND ${CMAKE_COMMAND} -E copy_if_different
-    $<TARGET_FILE:flutter_cv2_camera_plugin>
-    ${PROJECT_BINARY_DIR}/../bundle/libflutter_cv2_camera_plugin.so
+# 5. Install the main plugin library
+install(TARGETS flutter_cv2_camera_plugin
+    LIBRARY DESTINATION "${CMAKE_BINARY_DIR}/bundle/lib"
+    RUNTIME DESTINATION "${CMAKE_BINARY_DIR}/bundle/bin"
+    ARCHIVE DESTINATION "${CMAKE_BINARY_DIR}/bundle/lib"
 )
