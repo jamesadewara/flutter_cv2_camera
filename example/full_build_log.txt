@@ -1,0 +1,85 @@
+Resolving dependencies...
+Downloading packages...
+  async 2.12.0 (2.13.0 available)
+  characters 1.4.0 (1.4.1 available)
+  fake_async 1.3.2 (1.3.3 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  leak_tracker 10.0.8 (11.0.1 available)
+  leak_tracker_flutter_testing 3.0.9 (3.0.10 available)
+  leak_tracker_testing 3.0.1 (3.0.2 available)
+  lints 5.1.1 (6.0.0 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  meta 1.16.0 (1.17.0 available)
+  test_api 0.7.4 (0.7.6 available)
+  vector_math 2.1.4 (2.2.0 available)
+  vm_service 14.3.1 (15.0.2 available)
+Got dependencies!
+13 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+Launching lib/main.dart on Linux in debug mode...
+Building Linux application...                                   
+✓ Built build/linux/x64/debug/bundle/example
+Gdk-Message: 16:05:56.507: Unable to load  from the cursor theme
+Syncing files to device Linux...                                
+
+══╡ EXCEPTION CAUGHT BY WIDGETS LIBRARY ╞═══════════════════════════════════════════════════════════
+The following ArgumentError was thrown building Builder:
+Invalid argument(s): Failed to load dynamic library
+'/home/amexvilah/Documents/PROGRAMMING/Workspace/example/lib/libflutter_cv2_camera_plugin.so':
+/home/amexvilah/Documents/PROGRAMMING/Workspace/example/lib/libflutter_cv2_camera_plugin.so: cannot
+open shared object file: No such file or directory
+
+The relevant error-causing widget was:
+  MaterialApp
+  MaterialApp:file:///home/amexvilah/Documents/PROGRAMMING/Workspace/example/lib/main.dart:19:12
+
+When the exception was thrown, this was the stack:
+#0      _open (dart:ffi-patch/ffi_dynamic_library_patch.dart:11:43)
+#1      new DynamicLibrary.open (dart:ffi-patch/ffi_dynamic_library_patch.dart:22:12)
+#2      _lib (package:flutter_cv2_camera/src/cv2_camera_bindings.dart:47:44)
+#3      _lib (package:flutter_cv2_camera/src/cv2_camera_bindings.dart)
+#4      Cv2CameraBindings.flipCode (package:flutter_cv2_camera/src/cv2_camera_bindings.dart:70:7)
+#5      Cv2CameraBindings.flipCode (package:flutter_cv2_camera/src/cv2_camera_bindings.dart)
+#6      Cv2CameraController.setFlipCode (package:flutter_cv2_camera/src/cv2_camera_controller.dart:51:23)
+#7      _CameraPageState.initState (package:example/main.dart:44:16)
+#8      StatefulElement._firstBuild (package:flutter/src/widgets/framework.dart:5860:55)
+#9      ComponentElement.mount (package:flutter/src/widgets/framework.dart:5709:5)
+...     Normal element mounting (228 frames)
+#237    Element.inflateWidget (package:flutter/src/widgets/framework.dart:4555:16)
+#238    MultiChildRenderObjectElement.inflateWidget (package:flutter/src/widgets/framework.dart:7178:36)
+#239    MultiChildRenderObjectElement.mount (package:flutter/src/widgets/framework.dart:7194:32)
+...     Normal element mounting (525 frames)
+#764    Element.inflateWidget (package:flutter/src/widgets/framework.dart:4555:16)
+#765    Element.updateChild (package:flutter/src/widgets/framework.dart:4020:18)
+#766    _RawViewElement._updateChild (package:flutter/src/widgets/view.dart:481:16)
+#767    _RawViewElement.mount (package:flutter/src/widgets/view.dart:505:5)
+...     Normal element mounting (15 frames)
+#782    Element.inflateWidget (package:flutter/src/widgets/framework.dart:4555:16)
+#783    Element.updateChild (package:flutter/src/widgets/framework.dart:4020:18)
+#784    RootElement._rebuild (package:flutter/src/widgets/binding.dart:1687:16)
+#785    RootElement.mount (package:flutter/src/widgets/binding.dart:1656:5)
+#786    RootWidget.attach.<anonymous closure> (package:flutter/src/widgets/binding.dart:1609:18)
+#787    BuildOwner.buildScope (package:flutter/src/widgets/framework.dart:3056:19)
+#788    RootWidget.attach (package:flutter/src/widgets/binding.dart:1608:13)
+#789    WidgetsBinding.attachToBuildOwner (package:flutter/src/widgets/binding.dart:1346:27)
+#790    WidgetsBinding.attachRootWidget (package:flutter/src/widgets/binding.dart:1331:5)
+#791    WidgetsBinding.scheduleAttachRootWidget.<anonymous closure> (package:flutter/src/widgets/binding.dart:1317:7)
+#795    _RawReceivePort._handleMessage (dart:isolate-patch/isolate_patch.dart:194:12)
+(elided 3 frames from class _Timer and dart:async-patch)
+
+════════════════════════════════════════════════════════════════════════════════════════════════════
+
+Syncing files to device Linux...                                 1,489ms
+
+Flutter run key commands.
+r Hot reload. 🔥🔥🔥
+R Hot restart.
+h List all available interactive commands.
+d Detach (terminate "flutter run" but leave application running).
+c Clear the screen
+q Quit (terminate the application on the device).
+
+A Dart VM Service on Linux is available at: http://127.0.0.1:36319/5Scjlne1Xmo=/
+The Flutter DevTools debugger and profiler on Linux is available at: http://127.0.0.1:9101?uri=http://127.0.0.1:36319/5Scjlne1Xmo=/
+
+Application finished.
