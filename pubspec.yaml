@@ -28,16 +28,16 @@ dev_dependencies:
 flutter:
   plugin:
     platforms:
-      android:
-        ffiPlugin: true
+      # android:
+      #   ffiPlugin: true
       linux:
         ffiPlugin: true
-      windows:
-        ffiPlugin: true
-      ios:
-        ffiPlugin: true
-      macos:
-        ffiPlugin: true
+      # windows:
+      #   ffiPlugin: true
+      # ios:
+      #   ffiPlugin: true
+      # macos:
+      #   ffiPlugin: true
 
 # Optional: Points to an example app
 example:
