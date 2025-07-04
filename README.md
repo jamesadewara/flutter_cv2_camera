@@ -112,6 +112,9 @@ final bytes = await controller.takeSnap();
 
 <div class="video-grid">
   <div class="video">
+<img src="screenshots/Screenshot from 2025-07-04 19-07-02.png" />
+  </div>
+  <div class="video">
     <iframe width="560" height="315" src="https://youtu.be/YLmcxVz2lYQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
   </div>
 </div>
