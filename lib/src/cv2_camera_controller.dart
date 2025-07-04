@@ -5,6 +5,24 @@ import 'package:ffi/ffi.dart';
 import 'package:flutter_cv2_camera/src/cv2_camera_bindings.dart';
 import 'package:flutter_cv2_camera/src/cv2_camera_model.dart';
 
+/// Provides access to the camera controller, allowing for operations like
+/// starting/stopping the camera, setting resolution, and accessing camera preview.
+/// This file defines the Cv2CameraController class and related functionality
+/// for managing camera operations in a Flutter application using the cv2_camera
+/// This file defines the `Cv2CameraController` class, which manages camera operations
+/// such as initialization, image capture, and resource management for the package.
+/// 
+/// The controller provides a high-level API to interact with device cameras,
+/// handling platform-specific implementations and exposing methods for capturing
+/// images, starting and stopping camera streams, and configuring camera settings.
+/// 
+/// This file is intended for internal use within the package and should not be
+/// imported directly by package consumers. Instead, use the public API exposed
+/// by the package.
+/// 
+/// For more information on usage and available features, refer to the package
+/// documentation and example applications.
+
 class Cv2CameraController {
   final _frameStream = StreamController<Cv2Frame>.broadcast();
   Timer? _framePoller;

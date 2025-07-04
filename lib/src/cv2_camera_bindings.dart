@@ -1,6 +1,10 @@
 import 'dart:ffi';
 import 'package:flutter_cv2_camera/src/utils.dart';
 
+/// The dynamic library instance used for FFI calls.
+/// 
+/// Loads the native library using [loadLibrary] from the utils.
+
 final DynamicLibrary _lib = loadLibrary();
 
 // FFI typedefs

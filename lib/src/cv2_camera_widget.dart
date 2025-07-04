@@ -3,6 +3,12 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_cv2_camera/flutter_cv2_camera.dart';
 
+/// Manages real-time camera access and integrates with OpenCV for image processing.
+///
+/// The [Cv2Camera] class provides methods to initialize and control the camera,
+/// stream frames, and capture snapshots. It acts as the primary interface for
+/// leveraging OpenCV functionalities within your Flutter application.
+
 class Cv2Camera extends StatefulWidget {
   final Cv2CameraController controller;
   final void Function(Cv2Frame frame)? onFrame;
@@ -49,6 +55,17 @@ class _Cv2CameraState extends State<Cv2Camera> {
     widget.controller.dispose();
     super.dispose();
   }
+
+  @override
+  /// Builds the widget tree for the CV2 camera widget.
+  ///
+  /// This method is called whenever the widget needs to be rendered.
+  /// It should return a widget that represents the current state of the camera view.
+  ///
+  /// The [context] parameter provides information about the location in the widget tree
+  /// where this widget is being built.
+  ///
+  /// Returns a [Widget] that displays the camera preview and any associated UI elements.
 
   @override
   Widget build(BuildContext context) {
