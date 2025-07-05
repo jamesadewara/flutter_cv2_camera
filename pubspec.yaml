@@ -4,7 +4,7 @@ description: "A Flutter plugin bridging OpenCV (C++) with real-time camera acces
 version: 0.0.1
 homepage: https://github.com/jamesadewara/flutter_cv2_camera/README.md
 repository: https://github.com/jamesadewara/flutter_cv2_camera
-issue_tracker: https://github.com/jamesadewara/flutter_cv2_camera/issues 
+issue_tracker: https://github.com/jamesadewara/flutter_cv2_camera/issues
 documentation:
 
 environment:
