@@ -24,9 +24,10 @@ If you work with mobile or edge AI, this is the plugin you've been waiting for.
 * 🎯 `Cv2Camera` widget to render frames in your Flutter app.
 * 🔄 Frame subscription via `onFrame` (NumPy-array format).
 * 🖼️ Access raw image bytes via `onByte`.
-* 📸 Snapshots with `takeSnap()` — save or analyze.
-* ↔️ Flip camera feed (horizontal/vertical/both).
-* 📐 Resize camera view with custom width & height.
+* 📸 Snapshots with `onSnap` — save or analyze.
+* 🔄 Flip camera feed (horizontal/vertical/both).
+* 📐 Dynamically change resolution.
+* 🔁 Switch between available cameras by index.
 * 🔌 Built with FFI and native C++.
 * 💻 **Linux supported** now. Cross-platform rollout coming **weekly**.
 
@@ -48,17 +49,17 @@ dependencies:
 
 3. Your Flutter app must run on Linux for now:
 
-```bash
-flutter run -d linux
-```
+   ```bash
+   flutter run -d linux
+   ```
 
-> Support for Web, Android, and Windows coming **soon** — stay tuned.
+> Windows, Web, and Android support will be added soon — follow the repo for updates.
 
 ---
 
 ## 🛠️ Usage
 
-### 📸 Initialize and render the camera
+### Basic Setup
 
 ```dart
 final controller = Cv2CameraController();
@@ -66,48 +67,47 @@ final controller = Cv2CameraController();
 Cv2Camera(
   controller: controller,
   onFrame: (frame) {
-    // Frame as NumPy-style array (Uint8List)
-    print("Received frame of ${frame.bytes.length} bytes");
+    // Access as NumPy array (Uint8List)
+    processFrame(frame.bytes);
   },
   onByte: (bytes) {
-    // Raw JPEG bytes - e.g. for uploading
-    print("Image byte length: ${bytes.length}");
+    // Save or stream
+    upload(bytes);
   },
-  flipCode: 0, // 0 = vertical, 1 = horizontal, -1 = both, -2 = no flip
-  width: 300,  // resize camera preview
+  flipCode: 0, // vertical: 0, horizontal: 1, both: -1
+  width: 300,
   height: 250,
 );
 ```
 
 ---
 
-### 📂 Take a snapshot
+### 📸 Capture a Snapshot
 
 ```dart
-final imageBytes = await controller.takeSnap();
-if (imageBytes != null) {
-  // Save, analyze or upload
-  print("Captured image of ${imageBytes.length} bytes");
-}
+final bytes = await controller.takeSnap();
+// Save or analyze
 ```
 
 ---
 
-### 🔄 Flip camera feed
+### 🔁 Switch Camera (by index)
 
 ```dart
-controller.setFlipCode(-1); // Flip both axes
+// Switch to camera 1
+await controller.switchCamera(1);
+
+// Back to default (camera 0)
+await controller.switchCamera(0);
 ```
 
 ---
 
-### 🧠 Send to Python backend
-
-You can easily send the frame to your backend using the `toJson()` or `toBase64()`:
+### 📐 Set Camera Resolution
 
 ```dart
-Cv2Frame frame = Cv2Frame(bytes);
-String base64Data = frame.toBase64();
+// Set resolution to 640x480
+await controller.setResolution(width: 640, height: 480);
 ```
 
 ---
@@ -115,11 +115,9 @@ String base64Data = frame.toBase64();
 ## 📷 Screenshots / Demo
 
 <div align="center">
-  <img src="screenshots/Screenshot from 2025-07-04 19-07-02.png" width="400" />
-  <br /><br />
-  <a href="https://youtu.be/YLmcxVz2lYQ" target="_blank">
-    ▶️ Watch the Demo on YouTube
-  </a>
+  <img src="screenshots/Screenshot from 2025-07-04 19-07-02.png" width="60%" />
+  <br/><br/>
+  <iframe width="560" height="315" src="https://www.youtube.com/embed/YLmcxVz2lYQ" frameborder="0" allowfullscreen></iframe>
 </div>
 
 ---
@@ -139,7 +137,7 @@ Let’s build the future of mobile-first AI vision systems together. PRs and iss
 ## 🔮 Roadmap
 
 * ✅ Linux support
-* 🔜 Web support (WASM + JS glue)
+* 🔜 Web support
 * 🔜 Android support
 * 🔜 Windows support
 * 🔜 macOS & iOS
