@@ -13,6 +13,8 @@ typedef StopCameraC = Void Function();
 typedef GetFrameC = Pointer<Uint8> Function(Pointer<Int32>);
 typedef FreeFrameC = Void Function(Pointer<Uint8>);
 typedef FlipcodeCameraC = Void Function(Int32);
+typedef SwitchCameraC = Void Function(Int32);
+typedef SetResolutionC = Void Function(Int32, Int32);
 
 class Cv2CameraBindings {
   static final void Function() startCamera =
@@ -29,6 +31,11 @@ class Cv2CameraBindings {
 
   static final void Function(int) flipCode =
       _lib
-          .lookup<NativeFunction<FlipcodeCameraC>>('flipcode_camera')
+          .lookup<NativeFunction<FlipcodeCameraC>>('FlipcodeCamera')
           .asFunction();
+          static final void Function(int) switchCamera =
+      _lib.lookup<NativeFunction<SwitchCameraC>>('SwitchCamera').asFunction();
+
+  static final void Function(int, int) setResolution =
+      _lib.lookup<NativeFunction<SetResolutionC>>('SetResolution').asFunction();
 }

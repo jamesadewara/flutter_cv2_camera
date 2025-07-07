@@ -69,8 +69,18 @@ class Cv2CameraController {
     Cv2CameraBindings.flipCode(code);
   }
 
+    void switchCamera(int index) {
+    Cv2CameraBindings.switchCamera(index);
+  }
+
+ 
+  void setResolution({required int width, required int height}) {
+    Cv2CameraBindings.setResolution(width, height);
+  }
+
   void dispose() {
     stop();
     _frameStream.close();
   }
 }
+

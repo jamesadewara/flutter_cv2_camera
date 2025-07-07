@@ -1,4 +1,5 @@
 # flutter\_cv2\_camera
+
 **version 0.0.2**
 
 A custom Flutter plugin that bridges the power of OpenCV in C++ with real-time camera access in Flutter. Designed to enable real-time image streaming, frame analysis, and snapshot capturing—perfect for AI/ML projects focused on computer vision.
@@ -23,8 +24,9 @@ If you work with mobile or edge AI, this is the plugin you've been waiting for.
 * 🎯 `Cv2Camera` widget to render frames in your Flutter app.
 * 🔄 Frame subscription via `onFrame` (NumPy-array format).
 * 🖼️ Access raw image bytes via `onByte`.
-* 📸 Snapshots with `onSnap` — save or analyze.
-* 🔄 Flip camera feed (horizontal/vertical/both).
+* 📸 Snapshots with `takeSnap()` — save or analyze.
+* ↔️ Flip camera feed (horizontal/vertical/both).
+* 📐 Resize camera view with custom width & height.
 * 🔌 Built with FFI and native C++.
 * 💻 **Linux supported** now. Cross-platform rollout coming **weekly**.
 
@@ -36,7 +38,7 @@ If you work with mobile or edge AI, this is the plugin you've been waiting for.
 
 ```yaml
 dependencies:
-  flutter_cv2_camera: ^0.0.1
+  flutter_cv2_camera: ^0.0.2
 ```
 
 2. Linux prerequisites:
@@ -46,15 +48,17 @@ dependencies:
 
 3. Your Flutter app must run on Linux for now:
 
-   ```bash
-   flutter run -d linux
-   ```
+```bash
+flutter run -d linux
+```
 
-> Windows, Web, and Android support will be added soon — follow the repo for updates.
+> Support for Web, Android, and Windows coming **soon** — stay tuned.
 
 ---
 
 ## 🛠️ Usage
+
+### 📸 Initialize and render the camera
 
 ```dart
 final controller = Cv2CameraController();
@@ -62,61 +66,62 @@ final controller = Cv2CameraController();
 Cv2Camera(
   controller: controller,
   onFrame: (frame) {
-    // Access as NumPy array (in Uint8List form)
-    processFrame(frame.bytes);
+    // Frame as NumPy-style array (Uint8List)
+    print("Received frame of ${frame.bytes.length} bytes");
   },
   onByte: (bytes) {
-    // Save or stream
-    upload(bytes);
+    // Raw JPEG bytes - e.g. for uploading
+    print("Image byte length: ${bytes.length}");
   },
-  flipCode: 0, // vertical: 0, horizontal: 1, both: -1
-  width: 300,
+  flipCode: 0, // 0 = vertical, 1 = horizontal, -1 = both, -2 = no flip
+  width: 300,  // resize camera preview
   height: 250,
-)
+);
 ```
 
-To capture a snapshot:
+---
+
+### 📂 Take a snapshot
 
 ```dart
-final bytes = await controller.takeSnap();
-// Save or analyze
+final imageBytes = await controller.takeSnap();
+if (imageBytes != null) {
+  // Save, analyze or upload
+  print("Captured image of ${imageBytes.length} bytes");
+}
+```
+
+---
+
+### 🔄 Flip camera feed
+
+```dart
+controller.setFlipCode(-1); // Flip both axes
+```
+
+---
+
+### 🧠 Send to Python backend
+
+You can easily send the frame to your backend using the `toJson()` or `toBase64()`:
+
+```dart
+Cv2Frame frame = Cv2Frame(bytes);
+String base64Data = frame.toBase64();
 ```
 
 ---
 
 ## 📷 Screenshots / Demo
 
-<style>
-.video-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-}
-
-.video-grid .video {
-  flex: 1 1 calc(50% - 16px);
-  aspect-ratio: 16 / 9;
-  position: relative;
-}
-
-.video-grid .video iframe {
-  width: 100%;
-  height: 100%;
-  border: none;
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-</style>
-
-<div class="video-grid">
-  <div class="video">
-<img src="screenshots/Screenshot from 2025-07-04 19-07-02.png" />
-  </div>
-  <div class="video">
-    <iframe width="560" height="315" src="https://youtu.be/YLmcxVz2lYQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-  </div>
+<div align="center">
+  <img src="screenshots/Screenshot from 2025-07-04 19-07-02.png" width="400" />
+  <br /><br />
+  <a href="https://youtu.be/YLmcxVz2lYQ" target="_blank">
+    ▶️ Watch the Demo on YouTube
+  </a>
 </div>
+
 ---
 
 ## 🤝 Contributing
@@ -134,7 +139,7 @@ Let’s build the future of mobile-first AI vision systems together. PRs and iss
 ## 🔮 Roadmap
 
 * ✅ Linux support
-* 🔜 Web support
+* 🔜 Web support (WASM + JS glue)
 * 🔜 Android support
 * 🔜 Windows support
 * 🔜 macOS & iOS

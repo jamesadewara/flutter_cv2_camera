@@ -7,4 +7,6 @@ extern "C" {
     uint8_t* GetFrame(int* length) { return get_frame(length); }
     void FreeFrame(uint8_t* buffer) { free_frame(buffer); }
     void FlipcodeCamera(int flipCode) { flipcode_camera(flipCode); }
+    void SetResolution(int width, int height) { set_resolution(width, height); }
+    void SwitchCamera(int cameraIndex) { switch_camera(cameraIndex); }
 }

@@ -12,6 +12,8 @@ void stop_camera();
 uint8_t* get_frame(int* length); 
 void free_frame(uint8_t* buffer);
 void flipcode_camera(int flipCode);
+void set_resolution(int width, int height);
+void switch_camera(int cameraIndex);
 
 #ifdef __cplusplus
 }

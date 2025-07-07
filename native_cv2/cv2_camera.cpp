@@ -2,31 +2,40 @@
 #include <opencv2/opencv.hpp>
 #include <thread>
 #include <mutex>
-#include <cstdint> 
+#include <cstdint>
 
 static cv::VideoCapture cap;
 static cv::Mat currentFrame;
 static std::mutex frameMutex;
 static bool running = false;
 static int globalFlipCode = -2;  // -2 means no flipping
+static int cameraIndex = 0;
+static int resolutionWidth = 640;
+static int resolutionHeight = 480;
+
+void captureLoop() {
+    while (running) {
+        cv::Mat frame;
+        cap >> frame;
+        if (!frame.empty()) {
+            if (globalFlipCode != -2) {
+                cv::flip(frame, frame, globalFlipCode);
+            }
+            std::lock_guard<std::mutex> lock(frameMutex);
+            frame.copyTo(currentFrame);
+        }
+    }
+}
 
 extern "C" void start_camera() {
     if (running) return;
-    cap.open(0); // Default camera
+    cap.open(cameraIndex);
+    cap.set(cv::CAP_PROP_FRAME_WIDTH, resolutionWidth);
+    cap.set(cv::CAP_PROP_FRAME_HEIGHT, resolutionHeight);
+
+    if (!cap.isOpened()) return;
     running = true;
-    std::thread([=]() {
-        while (running) {
-            cv::Mat frame;
-            cap >> frame;
-            if (!frame.empty()) {
-                if (globalFlipCode != -2) {
-                    cv::flip(frame, frame, globalFlipCode);
-                }
-                std::lock_guard<std::mutex> lock(frameMutex);
-                frame.copyTo(currentFrame);
-            }
-        }
-    }).detach();
+    std::thread(captureLoop).detach();
 }
 
 extern "C" void stop_camera() {
@@ -53,8 +62,23 @@ extern "C" void free_frame(uint8_t* buffer) {
 }
 
 extern "C" void flipcode_camera(int flipCode) {
-    // -1: flip both axes, 0: vertical, 1: horizontal
     if (flipCode == -1 || flipCode == 0 || flipCode == 1 || flipCode == -2) {
         globalFlipCode = flipCode;
     }
+}
+
+extern "C" void set_resolution(int width, int height) {
+    resolutionWidth = width;
+    resolutionHeight = height;
+    if (cap.isOpened()) {
+        cap.set(cv::CAP_PROP_FRAME_WIDTH, resolutionWidth);
+        cap.set(cv::CAP_PROP_FRAME_HEIGHT, resolutionHeight);
+    }
+}
+
+extern "C" void switch_camera(int index) {
+    if (index == cameraIndex) return;
+    stop_camera();
+    cameraIndex = index;
+    start_camera();
 }
