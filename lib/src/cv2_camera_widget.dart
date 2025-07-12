@@ -16,6 +16,7 @@ class Cv2Camera extends StatefulWidget {
   final int flipCode;
   final double? width;
   final double? height;
+final Widget? progressWidget;
 
   const Cv2Camera({
     super.key,
@@ -25,6 +26,7 @@ class Cv2Camera extends StatefulWidget {
     this.flipCode = 0,
     this.width,
     this.height,
+    this.progressWidget
   });
 
   @override
@@ -70,6 +72,9 @@ class _Cv2CameraState extends State<Cv2Camera> {
   @override
   Widget build(BuildContext context) {
     if (_currentFrame == null) {
+      if(widget.progressWidget != null) {
+        return widget.progressWidget!;
+      }
       return const Center(child: CircularProgressIndicator());
     }
 
@@ -92,7 +97,7 @@ class _Cv2CameraState extends State<Cv2Camera> {
     return SizedBox(
       width: widget.width,
       height: widget.height,
-      child: imageWidget,
+      child: Expanded(child:imageWidget),
     );
   }
 }

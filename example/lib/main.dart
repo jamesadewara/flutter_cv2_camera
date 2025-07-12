@@ -36,12 +36,21 @@ class CameraPage extends StatefulWidget {
 class _CameraPageState extends State<CameraPage> {
   final controller = Cv2CameraController();
   Uint8List? snapshot;
-  int flipCode = -2; // -2 = no flip
+  int flipCode = -2;
+  int cameraWidth = 360;
+  int cameraHeight = 520;
+
+  final _formKey = GlobalKey<FormState>();
+  final _widthController = TextEditingController();
+  final _heightController = TextEditingController();
+  final _cameraIndexController = TextEditingController(text: "0");
 
   @override
   void initState() {
     super.initState();
     controller.setFlipCode(flipCode);
+    _widthController.text = cameraWidth.toString();
+    _heightController.text = cameraHeight.toString();
   }
 
   void _cycleFlip() {
@@ -57,6 +66,166 @@ class _CameraPageState extends State<CameraPage> {
       }
       controller.setFlipCode(flipCode);
     });
+  }
+
+  void _showSwitchCameraForm() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.grey[900],
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (context) {
+        return Padding(
+          padding: const EdgeInsets.all(20),
+          child: Form(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text(
+                  "Switch Camera",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: _cameraIndexController,
+                  keyboardType: TextInputType.number,
+                  style: const TextStyle(color: Colors.white),
+                  decoration: const InputDecoration(
+                    labelText: "Camera Index (0 = default)",
+                    labelStyle: TextStyle(color: Colors.white70),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white24),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton.icon(
+                  icon: const Icon(Icons.switch_camera),
+                  label: const Text("Switch"),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.deepPurple,
+                  ),
+                  onPressed: () {
+                    final idx = int.tryParse(_cameraIndexController.text) ?? 0;
+                    controller.switchCamera(idx);
+                    Navigator.pop(context);
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void _switchCamera() {
+    try {
+      controller.switchCamera(1);
+      debugPrint('Switched camera.');
+    } catch (e) {
+      debugPrint('Error switching camera: $e');
+    }
+  }
+
+  void _showResolutionForm() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.grey[900],
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (context) {
+        return Padding(
+          padding: const EdgeInsets.all(20),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text(
+                  "Set Camera Resolution",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextFormField(
+                        controller: _widthController,
+                        keyboardType: TextInputType.number,
+                        style: const TextStyle(color: Colors.white),
+                        decoration: const InputDecoration(
+                          labelText: "Width",
+                          labelStyle: TextStyle(color: Colors.white70),
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white24),
+                          ),
+                        ),
+                        validator:
+                            (v) =>
+                                (v == null || v.isEmpty) ? "Enter width" : null,
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: TextFormField(
+                        controller: _heightController,
+                        keyboardType: TextInputType.number,
+                        style: const TextStyle(color: Colors.white),
+                        decoration: const InputDecoration(
+                          labelText: "Height",
+                          labelStyle: TextStyle(color: Colors.white70),
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white24),
+                          ),
+                        ),
+                        validator:
+                            (v) =>
+                                (v == null || v.isEmpty)
+                                    ? "Enter height"
+                                    : null,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton.icon(
+                  icon: const Icon(Icons.check),
+                  label: const Text("Apply"),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.deepPurple,
+                  ),
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()) {
+                      final width =
+                          int.tryParse(_widthController.text) ?? cameraWidth;
+                      final height =
+                          int.tryParse(_heightController.text) ?? cameraHeight;
+                      setState(() {
+                        cameraWidth = width;
+                        cameraHeight = height;
+                      });
+                      controller.setResolution(width: width, height: height);
+                      Navigator.pop(context);
+                    }
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   Future<void> _takeAndSaveSnapshot() async {
@@ -81,53 +250,108 @@ class _CameraPageState extends State<CameraPage> {
 
   @override
   Widget build(BuildContext context) {
+    final isWide = MediaQuery.of(context).size.width > 600;
     return Scaffold(
-      appBar: AppBar(title: const Text('Cv2 Camera')),
-      body: Column(
+      backgroundColor: Colors.black,
+      body: Stack(
         children: [
-          Expanded(
+          Center(
             child: Cv2Camera(
               controller: controller,
               width: double.infinity,
               height: double.infinity,
               flipCode: flipCode,
-              onFrame: (Cv2Frame frame) {
-                debugPrint('New frame: ${frame.bytes.length} bytes');
-              },
+              onFrame: (Cv2Frame frame) {},
             ),
           ),
-          Container(
-            padding: const EdgeInsets.all(12),
-            color: Colors.black87,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                ElevatedButton.icon(
-                  onPressed: _takeAndSaveSnapshot,
-                  icon: const Icon(Icons.camera),
-                  label: const Text("Snapshot"),
+          // Bottom action bar
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
+              decoration: BoxDecoration(
+                color: Colors.black.withOpacity(0.7),
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(20),
                 ),
-                ElevatedButton.icon(
-                  onPressed: _cycleFlip,
-                  icon: const Icon(Icons.flip_camera_android),
-                  label: const Text("Flip"),
+              ),
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    IconButton(
+                      icon: const Icon(
+                        Icons.camera,
+                        color: Colors.white,
+                        size: 32,
+                      ),
+                      onPressed: _takeAndSaveSnapshot,
+                      tooltip: "Take Snapshot",
+                    ),
+                    const SizedBox(width: 12),
+                    IconButton(
+                      icon: const Icon(
+                        Icons.flip_camera_android,
+                        color: Colors.white,
+                        size: 32,
+                      ),
+                      onPressed: _cycleFlip,
+                      tooltip: "Flip Image",
+                    ),
+                    const SizedBox(width: 12),
+                    IconButton(
+                      icon: const Icon(
+                        Icons.switch_camera,
+                        color: Colors.white,
+                        size: 32,
+                      ),
+                      onPressed: _showSwitchCameraForm,
+                      tooltip: "Switch Camera",
+                    ),
+                    const SizedBox(width: 12),
+                    IconButton(
+                      icon: const Icon(
+                        Icons.settings,
+                        color: Colors.white,
+                        size: 32,
+                      ),
+                      onPressed: _showResolutionForm,
+                      tooltip: "Set Resolution",
+                    ),
+                    if (snapshot != null) ...[
+                      const SizedBox(width: 16),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: Image.memory(snapshot!, height: 48, width: 48),
+                      ),
+                    ],
+                  ],
                 ),
-                if (snapshot != null)
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
-                    child: Image.memory(snapshot!, height: 60, width: 60),
-                  ),
-              ],
+              ),
             ),
           ),
         ],
       ),
+      floatingActionButton:
+          isWide
+              ? null
+              : FloatingActionButton(
+                onPressed: _switchCamera,
+                backgroundColor: Colors.deepPurple,
+                child: const Icon(Icons.switch_camera),
+                tooltip: "Switch Camera",
+              ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 
   @override
   void dispose() {
     controller.dispose();
+    _widthController.dispose();
+    _heightController.dispose();
+    _cameraIndexController.dispose();
     super.dispose();
   }
 }

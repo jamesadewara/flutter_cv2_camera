@@ -17,6 +17,8 @@ dependencies:
   ffi: ^2.1.4
   path_provider: ^2.1.2
   path: ^1.8.3
+  js: ^0.6.7 #for web support
+  universal_html: ^2.2.1
 
 dev_dependencies:
   flutter_test:
@@ -32,12 +34,22 @@ flutter:
       #   ffiPlugin: true
       linux:
         ffiPlugin: true
+      web:
+        pluginClass: FlutterCv2CameraPlugin
+        fileName: web/cv2_camera_web_loader.js
       # windows:
       #   ffiPlugin: true
       # ios:
       #   ffiPlugin: true
       # macos:
       #   ffiPlugin: true
+
+  assets:
+    - packages/flutter_cv2_camera/web/opencv/opencv.js
+    - packages/flutter_cv2_camera/web/opencv/opencv_js.wasm
+    - packages/flutter_cv2_camera/web/flutter_cv2_camera.js
+    - packages/flutter_cv2_camera/web/flutter_cv2_camera.wasm
+    - packages/flutter_cv2_camera/web/cv2_camera_loader.js
 
 # Optional: Points to an example app
 example:

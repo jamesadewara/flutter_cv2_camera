@@ -2,7 +2,7 @@ import 'dart:ffi';
 import 'package:flutter_cv2_camera/src/utils.dart';
 
 /// The dynamic library instance used for FFI calls.
-/// 
+///
 /// Loads the native library using [loadLibrary] from the utils.
 
 final DynamicLibrary _lib = loadLibrary();
@@ -33,7 +33,7 @@ class Cv2CameraBindings {
       _lib
           .lookup<NativeFunction<FlipcodeCameraC>>('FlipcodeCamera')
           .asFunction();
-          static final void Function(int) switchCamera =
+  static final void Function(int) switchCamera =
       _lib.lookup<NativeFunction<SwitchCameraC>>('SwitchCamera').asFunction();
 
   static final void Function(int, int) setResolution =

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>flutter_cv2_camera</title>
+  <script>
+    // Initialize camera plugin before Flutter starts
+    window.addEventListener('load', async function() {
+      try {
+        await new Promise((resolve) => {
+          if (window.cv2Camera) return resolve();
+          
+          const script = document.createElement('script');
+          script.src = 'assets/packages/flutter_cv2_camera/web/cv2_camera_web_loader.js';
+          script.onload = resolve;
+          document.head.appendChild(script);
+        });
+        
+        await window.initCv2Camera();
+      } catch (e) {
+        console.error('Camera initialization failed:', e);
+      }
+
+      _flutter.loader.loadEntrypoint({
+        onEntrypointLoaded: async (engineInitializer) {
+          const appRunner = await engineInitializer.initializeEngine();
+          await appRunner.runApp();
+        }
+      });
+    });
+  </script>
+</head>
+<body>
+  <script src="main.dart.js" type="application/javascript"></script>
+</body>
+</html>
